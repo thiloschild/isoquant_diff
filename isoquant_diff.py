@@ -34,7 +34,15 @@ def get_data_excel(file):
 	df = df.set_index("Unnamed: 3")
 	data_dict = df.to_dict()
 	data_dict = data_dict["Unnamed: 4"]
+	data_dict = to_lowercase(data_dict)
 	return data_dict
+
+
+def check_for_numbers(data):
+
+	for x in data:
+		data[x] = is_number(data[x])
+	return data
 
 
 def create_list_of_parameters(dict1,dict2):
@@ -63,6 +71,8 @@ def diff_config(file1,file2,report_unique=False):
 
 	dict1 = get_data(file1)
 	dict2 = get_data(file2)
+	dict1 = check_for_numbers(dict1)
+	dict2 = check_for_numbers(dict2)
 
 	parameters = create_list_of_parameters(dict1, dict2)
 	df = pd.DataFrame(columns=['parameters', file1, file2])
@@ -79,6 +89,19 @@ def diff_config(file1,file2,report_unique=False):
 			df.drop(index_names1, inplace=True)
 			df.drop(index_names2, inplace=True)
 	return df
+
+def is_number(s):
+	try:
+		float(s)
+		return float(s)
+	except ValueError:
+		return s
+
+def to_lowercase(data):
+
+	data = {str(key).lower() : (transform(value) if isinstance(value, dict)
+			 else value) for key, value in data.items()}
+	return data
 
 
 #########################################################################
