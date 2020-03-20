@@ -70,6 +70,7 @@ def diff_config(file1,file2,report_unique=False):
 		new_row = {'parameters': x, file1: dict1[x], file2: dict2[x]}
 		row_df = pd.DataFrame([new_row])
 		df = pd.concat([df, row_df], ignore_index=True)
+		df = df[df[file1] != df[file2]]
 		if report_unique==True:
 			pass
 		else:
@@ -83,6 +84,7 @@ def diff_config(file1,file2,report_unique=False):
 #########################################################################
 file1 = sys.argv[1]
 file2 = sys.argv[2]
+
 df = diff_config(file1,file2)
 
 print(df)
