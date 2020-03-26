@@ -129,10 +129,8 @@ file2 = sys.argv[2]
 
 df = diff_config(file1,file2)
 
-print(df)
+html = df.to_html()
 
-# html = df.to_html()
-
-# text_file = open("diff_between_"+file1+"_"+file2+".html", "w")
-# text_file.write(html)
-# text_file.close()
+text_file = open("diff_between_"+file1+"_"+file2+".html", "w")
+text_file.write(html)
+text_file.close()
