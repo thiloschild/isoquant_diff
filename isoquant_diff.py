@@ -129,6 +129,7 @@ file2 = sys.argv[2]
 
 df = diff_config(file1,file2)
 
+
 html = df.to_html()
 
 text_file = open("diff_between_"+file1+"_"+file2+".html", "w")
