@@ -91,21 +91,22 @@ def diff_config(file1,file2,report_unique=False):
 
 		parameters = create_list_of_parameters(dict1, dict2)
 		df = pd.DataFrame(columns=['parameters', file1, file2])
+
+	
 		for x in parameters:
 			new_row = {'parameters': x, file1: dict1[x], file2: dict2[x]}
 			row_df = pd.DataFrame([new_row])
 			df = pd.concat([df, row_df], ignore_index=True)
 			df = df[df[file1] != df[file2]]
-			if report_unique==True:
+			if report_unique == True:
 				pass
 			else:
-				index_names1 = df[(df[file1]=='NotSet')].index
-				index_names2 = df[(df[file2]=='NotSet')].index
-				df.drop(index_names1, inplace=True)
-				df.drop(index_names2, inplace=True)
+				if dict1[x]  == "NotSet" or dict2[x] == "NotSet":
+					df = df[:-1]
 		return df
 	else:
 		print("Please use and .ini or .xlsx file!")
+
 
 
 def conv2float(s):
@@ -128,7 +129,7 @@ file2 = sys.argv[2]
 
 df = diff_config(file1,file2)
 
-
+print(df)
 
 # html = df.to_html()
 
