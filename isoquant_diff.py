@@ -80,7 +80,7 @@ def create_list_of_parameters(dict1,dict2):
 	return parameters
 
 
-def diff_config(file1,file2,report_unique=False):
+def diff_config(file1,file2,report_unique=True):
 
 	if validate_file(file1) and validate_file(file2) == True:
 
