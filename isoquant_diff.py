@@ -7,10 +7,23 @@ def get_data(file):
 
 	if file.endswith(".ini"):
 		data = get_data_ini(file)
-	elif file.endswith("xlsx"):
+	elif file.endswith(".xlsx"):
 		data = get_data_excel(file)
+	else:
+		print("Please use and .ini or .xlsx file!")
 
 	return data
+
+def validate_file(file):
+
+	if file.endswith(".ini"):
+		valid_file = True
+	elif file.endswith(".xlsx"):
+		valid_file = True
+	else:
+		valid_file = False
+
+	return valid_file
 
 
 def get_data_ini(file):
@@ -41,7 +54,7 @@ def get_data_excel(file):
 def check_for_numbers(data):
 
 	for x in data:
-		data[x] = is_number(data[x])
+		data[x] = conv2float(data[x])
 	return data
 
 
@@ -69,28 +82,33 @@ def create_list_of_parameters(dict1,dict2):
 
 def diff_config(file1,file2,report_unique=False):
 
-	dict1 = get_data(file1)
-	dict2 = get_data(file2)
-	dict1 = check_for_numbers(dict1)
-	dict2 = check_for_numbers(dict2)
+	if validate_file(file1) and validate_file(file2) == True:
 
-	parameters = create_list_of_parameters(dict1, dict2)
-	df = pd.DataFrame(columns=['parameters', file1, file2])
-	for x in parameters:
-		new_row = {'parameters': x, file1: dict1[x], file2: dict2[x]}
-		row_df = pd.DataFrame([new_row])
-		df = pd.concat([df, row_df], ignore_index=True)
-		df = df[df[file1] != df[file2]]
-		if report_unique==True:
-			pass
-		else:
-			index_names1 = df[(df[file1]=='NotSet')].index
-			index_names2 = df[(df[file2]=='NotSet')].index
-			df.drop(index_names1, inplace=True)
-			df.drop(index_names2, inplace=True)
-	return df
+		dict1 = get_data(file1)
+		dict2 = get_data(file2)
+		dict1 = check_for_numbers(dict1)
+		dict2 = check_for_numbers(dict2)
 
-def is_number(s):
+		parameters = create_list_of_parameters(dict1, dict2)
+		df = pd.DataFrame(columns=['parameters', file1, file2])
+		for x in parameters:
+			new_row = {'parameters': x, file1: dict1[x], file2: dict2[x]}
+			row_df = pd.DataFrame([new_row])
+			df = pd.concat([df, row_df], ignore_index=True)
+			df = df[df[file1] != df[file2]]
+			if report_unique==True:
+				pass
+			else:
+				index_names1 = df[(df[file1]=='NotSet')].index
+				index_names2 = df[(df[file2]=='NotSet')].index
+				df.drop(index_names1, inplace=True)
+				df.drop(index_names2, inplace=True)
+		return df
+	else:
+		print("Please use and .ini or .xlsx file!")
+
+
+def conv2float(s):
 	try:
 		float(s)
 		return float(s)
@@ -110,4 +128,10 @@ file2 = sys.argv[2]
 
 df = diff_config(file1,file2)
 
-print(df)
+
+
+# html = df.to_html()
+
+# text_file = open("diff_between_"+file1+"_"+file2+".html", "w")
+# text_file.write(html)
+# text_file.close()
