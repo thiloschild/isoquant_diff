@@ -103,7 +103,14 @@ def diff_config(file1,file2,report_unique=True):
 			else:
 				if dict1[x]  == "NotSet" or dict2[x] == "NotSet":
 					df = df[:-1]
-		return df
+		
+		html = df.to_html()
+		text_file = open("diff_between_"+file1+"_"+file2+".html", "w")
+		text_file.write(html)
+		text_file.close()
+		print("------------------")
+		print("A comparison file has been created!")
+		print("------------------")
 	else:
 		print("Please use and .ini or .xlsx file!")
 
@@ -124,14 +131,9 @@ def to_lowercase(data):
 
 
 #########################################################################
-file1 = sys.argv[1]
-file2 = sys.argv[2]
+file1 = input("Enter the name of the first file: ")
+file2 = input("Enter the name of the second file: ")
 
-df = diff_config(file1,file2)
+diff_config(file1,file2)
 
 
-html = df.to_html()
-
-text_file = open("diff_between_"+file1+"_"+file2+".html", "w")
-text_file.write(html)
-text_file.close()
