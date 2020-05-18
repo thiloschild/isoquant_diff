@@ -1,5 +1,6 @@
 import configparser
 import pandas as pd
+import xlrd
 import sys
 
 
@@ -10,7 +11,7 @@ def get_data(file):
 	elif file.endswith(".xlsx"):
 		data = get_data_excel(file)
 	else:
-		print("Please use and .ini or .xlsx file!")
+		print("Please use an .ini or .xlsx file!")
 
 	return data
 
@@ -37,8 +38,19 @@ def get_data_ini(file):
 	data_dict = {item[0]: item[1] for item in data}
 	return data_dict
 
-
 def get_data_excel(file):
+
+	data_dict = {}
+	workbook = xlrd.open_workbook(file, on_demand = True)
+	worksheet = workbook.sheet_by_name('config')
+	for x in range (3, worksheet.nrows):
+		data_dict[worksheet.cell(x, 3).value] = worksheet.cell(x, 4).value
+	data_dict = to_lowercase(data_dict)
+	return data_dict
+
+
+
+def get_data_excel_old(file):
 
 	csv = pd.ExcelFile(file)
 	df = pd.read_excel(csv, 'config')
@@ -111,6 +123,7 @@ def diff_config(file1,file2,report_unique=True):
 		print("------------------")
 		print("A comparison file has been created!")
 		print("------------------")
+		
 	else:
 		print("Please use and .ini or .xlsx file!")
 
@@ -135,5 +148,3 @@ file1 = input("Enter the name of the first file: ")
 file2 = input("Enter the name of the second file: ")
 
 diff_config(file1,file2)
-
-
