@@ -106,7 +106,6 @@ def diff_config(file1,file2,report_unique=True):
 		parameters = create_list_of_parameters(dict1, dict2)
 		df = pd.DataFrame(columns=['parameters', file1, file2])
 
-	
 		for x in parameters:
 			new_row = {'parameters': x, file1: dict1[x], file2: dict2[x]}
 			row_df = pd.DataFrame([new_row])
@@ -118,6 +117,8 @@ def diff_config(file1,file2,report_unique=True):
 				if dict1[x]  == "NotSet" or dict2[x] == "NotSet":
 					df = df[:-1]
 		
+		file1 = os.path.basename(file1) #change pathe to filename
+		file2 = os.path.basename(file2)
 		html = df.to_html()
 		text_file = open("diff_between_"+file1+"_"+file2+".html", "w")
 		text_file.write(html)
@@ -147,13 +148,14 @@ def to_lowercase(data):
 
 
 def file_existing(file):
-	
+
 	x = os.path.exists(file)
 	return x
 
 #########################################################################
 
-file1 = input("Enter the name of the first file: ")
+file1 = input("Enter the name or the path of the first file: ")
+
 if validate_file(file1) == False:
 	print("------------------")
 	print("Please use and .ini or .xlsx file!")
@@ -165,7 +167,7 @@ elif file_existing(file1) == False:
 	print("------------------")
 
 else:
-	file2 = input("Enter the name of the second file: ")
+	file2 = input("Enter the name or the path of the second file: ")
 
 	if validate_file(file2) == False:
 		print("------------------")
@@ -183,6 +185,7 @@ else:
 		print("------------------")
 
 	else:
-
 		diff_config(file1,file2)
+		file1 = os.path.basename(file1)
+		file2 = os.path.basename(file2)
 		webbrowser.open("diff_between_"+file1+"_"+file2+".html", new=2)
