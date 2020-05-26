@@ -1,7 +1,8 @@
 import configparser
 import pandas as pd
 import xlrd
-import sys
+import webbrowser
+import os.path
 
 
 def get_data(file):
@@ -14,6 +15,7 @@ def get_data(file):
 		print("Please use an .ini or .xlsx file!")
 
 	return data
+
 
 def validate_file(file):
 
@@ -38,6 +40,7 @@ def get_data_ini(file):
 	data_dict = {item[0]: item[1] for item in data}
 	return data_dict
 
+
 def get_data_excel(file):
 
 	data_dict = {}
@@ -47,7 +50,6 @@ def get_data_excel(file):
 		data_dict[worksheet.cell(x, 3).value] = worksheet.cell(x, 4).value
 	data_dict = to_lowercase(data_dict)
 	return data_dict
-
 
 
 def get_data_excel_old(file):
@@ -128,13 +130,14 @@ def diff_config(file1,file2,report_unique=True):
 		print("Please use and .ini or .xlsx file!")
 
 
-
 def conv2float(s):
+
 	try:
 		float(s)
 		return float(s)
 	except ValueError:
 		return s
+
 
 def to_lowercase(data):
 
@@ -143,8 +146,43 @@ def to_lowercase(data):
 	return data
 
 
-#########################################################################
-file1 = input("Enter the name of the first file: ")
-file2 = input("Enter the name of the second file: ")
+def file_existing(file):
+	
+	x = os.path.exists(file)
+	return x
 
-diff_config(file1,file2)
+#########################################################################
+
+file1 = input("Enter the name of the first file: ")
+if validate_file(file1) == False:
+	print("------------------")
+	print("Please use and .ini or .xlsx file!")
+	print("------------------")
+
+elif file_existing(file1) == False:
+	print("------------------")
+	print("This file does not exist!")
+	print("------------------")
+
+else:
+	file2 = input("Enter the name of the second file: ")
+
+	if validate_file(file2) == False:
+		print("------------------")
+		print("Please use and .ini or .xlsx file!")
+		print("------------------")
+
+	elif file_existing(file2) == False:
+		print("------------------")
+		print("This file does not exist!")
+		print("------------------")
+
+	elif file1 == file2:
+		print("------------------")
+		print("Cannot compare file with itself!")
+		print("------------------")
+
+	else:
+
+		diff_config(file1,file2)
+		webbrowser.open("diff_between_"+file1+"_"+file2+".html", new=2)
