@@ -96,39 +96,36 @@ def create_list_of_parameters(dict1,dict2):
 
 def diff_config(file1,file2,report_unique=True):
 
-	if validate_file(file1) and validate_file(file2) == True:
 
-		dict1 = get_data(file1)
-		dict2 = get_data(file2)
-		dict1 = check_for_numbers(dict1)
-		dict2 = check_for_numbers(dict2)
+	dict1 = get_data(file1)
+	dict2 = get_data(file2)
+	dict1 = check_for_numbers(dict1)
+	dict2 = check_for_numbers(dict2)
 
-		parameters = create_list_of_parameters(dict1, dict2)
-		df = pd.DataFrame(columns=['parameters', file1, file2])
-
-		for x in parameters:
-			new_row = {'parameters': x, file1: dict1[x], file2: dict2[x]}
-			row_df = pd.DataFrame([new_row])
-			df = pd.concat([df, row_df], ignore_index=True)
-			df = df[df[file1] != df[file2]]
-			if report_unique == True:
-				pass
-			else:
-				if dict1[x]  == "NotSet" or dict2[x] == "NotSet":
-					df = df[:-1]
+	parameters = create_list_of_parameters(dict1, dict2)
+	df = pd.DataFrame(columns=['parameters', file1, file2])
+	
+	for x in parameters:
+		new_row = {'parameters': x, file1: dict1[x], file2: dict2[x]}
+		row_df = pd.DataFrame([new_row])
+		df = pd.concat([df, row_df], ignore_index=True)
+		df = df[df[file1] != df[file2]]
+		if report_unique == True:
+			pass
+		else:
+			if dict1[x]  == "NotSet" or dict2[x] == "NotSet":
+				df = df[:-1]
+	
+	file1 = os.path.basename(file1) #change pathe to filename
+	file2 = os.path.basename(file2)
+	html = df.to_html()
+	text_file = open("diff_between_"+file1+"_"+file2+".html", "w")
+	text_file.write(html)
+	text_file.close()
+	print("------------------")
+	print("A comparison file has been created!")
+	print("------------------")
 		
-		file1 = os.path.basename(file1) #change pathe to filename
-		file2 = os.path.basename(file2)
-		html = df.to_html()
-		text_file = open("diff_between_"+file1+"_"+file2+".html", "w")
-		text_file.write(html)
-		text_file.close()
-		print("------------------")
-		print("A comparison file has been created!")
-		print("------------------")
-		
-	else:
-		print("Please use and .ini or .xlsx file!")
 
 
 def conv2float(s):
@@ -158,7 +155,7 @@ file1 = input("Enter the name or the path of the first file: ")
 
 if validate_file(file1) == False:
 	print("------------------")
-	print("Please use and .ini or .xlsx file!")
+	print("Please use an .ini or .xlsx file!")
 	print("------------------")
 
 elif file_existing(file1) == False:
@@ -171,7 +168,7 @@ else:
 
 	if validate_file(file2) == False:
 		print("------------------")
-		print("Please use and .ini or .xlsx file!")
+		print("Please use an .ini or .xlsx file!")
 		print("------------------")
 
 	elif file_existing(file2) == False:
