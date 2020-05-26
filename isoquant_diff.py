@@ -4,6 +4,8 @@ import xlrd
 import webbrowser
 import os.path
 
+#import openpyxl
+
 
 def get_data(file):
 
@@ -104,7 +106,7 @@ def diff_config(file1,file2,report_unique=True):
 
 	parameters = create_list_of_parameters(dict1, dict2)
 	df = pd.DataFrame(columns=['parameters', file1, file2])
-	
+
 	for x in parameters:
 		new_row = {'parameters': x, file1: dict1[x], file2: dict2[x]}
 		row_df = pd.DataFrame([new_row])
@@ -116,16 +118,16 @@ def diff_config(file1,file2,report_unique=True):
 			if dict1[x]  == "NotSet" or dict2[x] == "NotSet":
 				df = df[:-1]
 	
-	file1 = os.path.basename(file1) #change pathe to filename
+	file1 = os.path.basename(file1) #change paths to filenames
 	file2 = os.path.basename(file2)
 	html = df.to_html()
+	df.to_excel("diff_between_"+file1+"_"+file2+".xlsx")
 	text_file = open("diff_between_"+file1+"_"+file2+".html", "w")
 	text_file.write(html)
 	text_file.close()
 	print("------------------")
 	print("A comparison file has been created!")
 	print("------------------")
-		
 
 
 def conv2float(s):
