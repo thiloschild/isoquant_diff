@@ -4,8 +4,6 @@ import xlrd
 import webbrowser
 import os.path
 
-#import openpyxl
-
 
 def get_data(file):
 
@@ -153,38 +151,40 @@ def file_existing(file):
 
 #########################################################################
 
-file1 = input("Enter the name or the path of the first file: ")
+def main():
+	
+	file1 = input("Enter the name or the path of the first file: ")
 
-if validate_file(file1) == False:
-	print("------------------")
-	print("Please use an .ini or .xlsx file!")
-	print("------------------")
-
-elif file_existing(file1) == False:
-	print("------------------")
-	print("This file does not exist!")
-	print("------------------")
-
-else:
-	file2 = input("Enter the name or the path of the second file: ")
-
-	if validate_file(file2) == False:
+	if validate_file(file1) == False:
 		print("------------------")
 		print("Please use an .ini or .xlsx file!")
 		print("------------------")
-
-	elif file_existing(file2) == False:
+	
+	elif file_existing(file1) == False:
 		print("------------------")
 		print("This file does not exist!")
 		print("------------------")
-
-	elif file1 == file2:
-		print("------------------")
-		print("Cannot compare file with itself!")
-		print("------------------")
-
+	
 	else:
-		diff_config(file1,file2)
-		file1 = os.path.basename(file1)
-		file2 = os.path.basename(file2)
-		webbrowser.open("diff_between_"+file1+"_"+file2+".html", new=2)
+		file2 = input("Enter the name or the path of the second file: ")
+	
+		if validate_file(file2) == False:
+			print("------------------")
+			print("Please use an .ini or .xlsx file!")
+			print("------------------")
+	
+		elif file_existing(file2) == False:
+			print("------------------")
+			print("This file does not exist!")
+			print("------------------")
+	
+		elif file1 == file2:
+			print("------------------")
+			print("Cannot compare file with itself!")
+			print("------------------")
+	
+		else:
+			diff_config(file1,file2)
+			file1 = os.path.basename(file1)
+			file2 = os.path.basename(file2)
+			webbrowser.open("diff_between_"+file1+"_"+file2+".html", new=2)	
