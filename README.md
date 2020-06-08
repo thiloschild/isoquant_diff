@@ -13,22 +13,21 @@ pip install isoquant_diff
 
 ## Usage
 
-Once the package is installed you can call ist from the command line or in a python script.
+Once the package is installed you can call isoquant_diff from the command line.
 
-This package will ask for two file in the command prompt and will create an excel file and html file with all differences.
+It will ask for two file in the command prompt and will create an excel file and html file with all differences.
 
-Cmd:
+Command prompt:
 
 ```bash
-isoquant_diff
+isoquant_diff [-h] [-c] [-r]
 ```
+-h, --help           show this help message and exit
 
-Python:
-```python
-import isoquant_diff
+-c, --csv            output as csv (default: html-file)
 
-isoquant_diff.main() 
-```
+-r, --report_unique  compares only parameters which are defined in both config-files
+
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
