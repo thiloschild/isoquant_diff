@@ -5,6 +5,7 @@ import webbrowser
 import os.path
 import sys
 import argparse
+import easygui
 
 
 def get_data(file):
@@ -104,6 +105,9 @@ def diff_config(file1,file2,csv,report_unique=True):
 	dict1 = check_for_numbers(dict1)
 	dict2 = check_for_numbers(dict2)
 
+	file1 = os.path.basename(file1) #change paths to filenames
+	file2 = os.path.basename(file2)
+
 	parameters = create_list_of_parameters(dict1, dict2)
 	df = pd.DataFrame(columns=['parameters', file1, file2])
 
@@ -118,21 +122,27 @@ def diff_config(file1,file2,csv,report_unique=True):
 			if dict1[x]  == "NotSet" or dict2[x] == "NotSet":
 				df = df[:-1]
 	
-	file1 = os.path.basename(file1) #change paths to filenames
-	file2 = os.path.basename(file2)
+	#saving the file
+	file1_name = os.path.splitext(file1)[0]
+	file2_name = os.path.splitext(file2)[0]
+	save_path = easygui.filesavebox(default="diff_between_"+file1_name+"_"+file2_name)
+	save_path = save_path.split('.')[0]
+
 	if csv == True:
-		df.to_excel("diff_between_"+file1+"_"+file2+".xlsx")
+		df.to_excel(save_path+".xlsx")
 		print("------------------")
 		print("A comparison file (csv) has been created!")
 		print("------------------")
 	if csv == False:
 		html = df.to_html()
-		text_file = open("diff_between_"+file1+"_"+file2+".html", "w")
+		text_file = open(save_path+".html", "w")
 		text_file.write(html)
 		text_file.close()	
 		print("------------------")
 		print("A comparison file (html) has been created!")
 		print("------------------")
+
+	return save_path
 
 
 def conv2float(s):
@@ -170,43 +180,57 @@ def main():
 	csv = args["csv"]
 	report_unique = args["report_unique"]
 
+	print("Select your first file:")
+	file1 = easygui.fileopenbox()
+	print(file1)
 
-	file1 = input("Enter the name or the path of the first file: ")
-
-	if validate_file(file1) == False:
+	if file1 == None:
 		print("------------------")
-		print("Please use an .ini or .xlsx file!")
+		print("Please select a file!")
 		print("------------------")
-	
-	elif file_existing(file1) == False:
-		print("------------------")
-		print("This file does not exist!")
-		print("------------------")
-	
 	else:
-		file2 = input("Enter the name or the path of the second file: ")
-	
-		if validate_file(file2) == False:
+		if validate_file(file1) == False:
 			print("------------------")
 			print("Please use an .ini or .xlsx file!")
 			print("------------------")
 	
-		elif file_existing(file2) == False:
+		elif file_existing(file1) == False:
 			print("------------------")
 			print("This file does not exist!")
 			print("------------------")
 	
-		elif file1 == file2:
-			print("------------------")
-			print("Cannot compare file with itself!")
-			print("------------------")
-	
 		else:
-			diff_config(file1,file2,csv,report_unique)
-			file1 = os.path.basename(file1)
-			file2 = os.path.basename(file2)
-			if csv == False:
-				webbrowser.open("diff_between_"+file1+"_"+file2+".html", new=2)
+			print("Select your second file:")
+			file2 = easygui.fileopenbox()
+			print(file2)
+	
+			if file2 == None:
+				print("------------------")
+				print("Please select a file!")
+				print("------------------")
+			else:
+	
+				if validate_file(file2) == False:
+					print("------------------")
+					print("Please use an .ini or .xlsx file!")
+					print("------------------")
+	
+				elif file_existing(file2) == False:
+					print("------------------")
+					print("This file does not exist!")
+					print("------------------")
+	
+				elif file1 == file2:
+					print("------------------")
+					print("Cannot compare file with itself!")
+					print("------------------")
+	
+				else:
+					path = diff_config(file1,file2,csv,report_unique)
+					file1 = os.path.basename(file1)
+					file2 = os.path.basename(file2)
+					if csv == False:
+						webbrowser.open(path+".html", new=2)
 
 
 if __name__ == "__main__":
